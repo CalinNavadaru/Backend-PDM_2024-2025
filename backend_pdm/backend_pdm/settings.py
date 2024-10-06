@@ -85,11 +85,11 @@ ASGI_APPLICATION = "backend_pdm.asgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "PASSWORD": os.environ["PASSWORD"],
-        "USER": os.environ["USER"],
-        "NAME": os.environ["NAME"],
-        "HOST": os.environ["HOST"],
-        "PORT": int(os.environ["PORT"])
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+        "USER": os.environ["POSTGRES_USER"],
+        "NAME": os.environ["POSTGRES_NAME"],
+        "HOST": os.environ["POSTGRES_HOST"],
+        "PORT": int(os.environ["POSTGRES_PORT"])
     }
 }
 
@@ -126,3 +126,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(f"redis://{os.environ["REDIS_USER"]}:{os.environ["REDIS_PASSWORD"]}@{os.environ["REDIS_HOST"]}:{os.environ["REDIS_PORT"]}")]
+        }
+    }
+}

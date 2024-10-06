@@ -1,0 +1,30 @@
+services:
+  postgres-db:
+      env_file: 
+        - postgres.env
+      image: postgres:latest
+      restart: always
+      shm_size: '128mb'
+      ports:
+        - "5432:5432"
+      volumes:
+        - ./postgres:/etc/postgresql
+      networks:
+        - pdm_2024_2025
+
+  redis-db:
+      image: redis:latest
+      command: redis-server /redis.conf
+      volumes:
+        - ./redis.conf:/redis.conf
+        - ./redis:/data
+      ports:
+        - "6379:6379"
+      networks:
+        - pdm_2024_2025
+
+
+networks:
+  pdm_2024_2025:
+    external: true
+        

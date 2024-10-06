@@ -1,0 +1,1 @@
+GROUP_NAME="employees_notifications"

@@ -3,3 +3,4 @@ djangorestframework
 channels[daphne]
 psycopg[binary]
 python-dotenv
+channels_redis

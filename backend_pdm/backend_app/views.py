@@ -9,6 +9,7 @@ from asgiref.sync import async_to_sync
 
 from backend_app.models import Employees
 from backend_app.serializers import EmployeesSerializer
+from .constants import GROUP_NAME
 
 
 class EmployeeList(APIView):
@@ -22,8 +23,10 @@ class EmployeeList(APIView):
         if serializer.is_valid():
             serializer.save()
             channel_layer = get_channel_layer()
-
-            return Response(serializer.data)
+            async_to_sync(channel_layer.group_send)(
+                GROUP_NAME, {"type": "ADD", "message": serializer.data}
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EmployeeDetails(APIView):
@@ -37,5 +40,9 @@ class EmployeeDetails(APIView):
         serializer = EmployeesSerializer(employee, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                GROUP_NAME, {"type": "UPDATE", "message": serializer.data}
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

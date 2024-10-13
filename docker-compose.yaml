@@ -1,28 +1,50 @@
 services:
-  postgres-db:
+  postgres_db:
       env_file: 
-        - postgres.env
+        - .env
       image: postgres:latest
       restart: always
       shm_size: '128mb'
       ports:
-        - "5432:5432"
+        - "${POSTGRES_PORT}:${POSTGRES_PORT}"
       volumes:
         - ./postgres:/etc/postgresql
       networks:
         - pdm_2024_2025
+      healthcheck:
+        test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+        interval: 10s
+        timeout: 3s
+        retries: 3
 
-  redis-db:
+  redis_db:
       image: redis:latest
+      env_file: 
+        - .env
       command: redis-server /redis.conf
       volumes:
         - ./redis.conf:/redis.conf
         - ./redis:/data
       ports:
-        - "6379:6379"
+        - "${REDIS_PORT}:${REDIS_PORT}"
       networks:
         - pdm_2024_2025
+      healthcheck:
+        test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
+
+  backend:
+      env_file: 
+        - .env
+      build: .
+      command: python /server/code/manage.py runserver ${BACKEND_INTERFACE}:${BACKEND_PORT}
+      volumes: 
+        - ./backend_pdm:/server/code
+      ports:
+        - "${BACKEND_PORT}:${BACKEND_PORT}"
+      networks:
+        - pdm_2024_2025
+      tty: true
 
 networks:
   pdm_2024_2025:

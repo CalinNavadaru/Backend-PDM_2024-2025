@@ -4,3 +4,4 @@ channels[daphne]
 psycopg[binary]
 python-dotenv
 channels_redis
+django-cors-headers

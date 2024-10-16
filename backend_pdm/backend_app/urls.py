@@ -5,7 +5,7 @@ from .consumers import EmployeeConsumer
 
 urlpatterns = [
     path('', EmployeeList.as_view(), name='employees-list'),
-    path('<int:employee_id>/', EmployeeDetails.as_view(), name='employee-detail')
+    path('<int:employee_id>/', EmployeeDetails.as_view(), name='employees-detail')
 ]
 
 websocket_urlpatterns = [

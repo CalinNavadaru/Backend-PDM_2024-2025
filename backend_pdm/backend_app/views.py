@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+import sys
+import json
 
 from backend_app.models import Employees
 from backend_app.serializers import EmployeesSerializer
@@ -24,7 +26,7 @@ class EmployeeList(APIView):
             serializer.save()
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
-                GROUP_NAME, {"type": "ADD", "message": serializer.data}
+                GROUP_NAME, {"type": "add_notification", "message": serializer.data}
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -37,12 +39,12 @@ class EmployeeDetails(APIView):
 
     def put(self, request: Request, employee_id: int):
         employee = get_object_or_404(Employees, pk=employee_id)
-        serializer = EmployeesSerializer(employee, data=request.data, context={'request': request})
+        serializer = EmployeesSerializer(employee, data=request.data, context={'request': request}, partial=True)
         if serializer.is_valid():
             serializer.save()
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
-                GROUP_NAME, {"type": "UPDATE", "message": serializer.data}
+                GROUP_NAME, {"type": "update_notification", "message": serializer.data}
             )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

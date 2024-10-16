@@ -18,19 +18,23 @@ class EmployeeConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )
-    
-    def receive(self, text_data=None, bytes_data=None):
-        text_data_json = json.loads(text_data)
-        type_message = text_data_json["type"]
-        message = text_data_json["message"]
-        
-        if type_message in ["ADD", "UPDATE"]:
-            async_to_sync(self.channel_layer.group_send)(
-                self.group_name, {"type": "send_notification", "message": message}
-            )
 
-    def send_notification(self, event):
+    def add_notification(self, event):
         message = event['message']
+        message = {
+            "employee": message,
+            "type": "add"
+        }
+        self.send(text_data=json.dumps({
+            'message': message
+        }))
+
+    def update_notification(self, event):
+        message = event['message']
+        message = {
+            "employee": message,
+            "type": "update"
+        }
         self.send(text_data=json.dumps({
             'message': message
         }))

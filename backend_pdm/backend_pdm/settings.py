@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "channels",
     "corsheaders",
+    "django_apscheduler"
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,6 @@ CHANNEL_LAYERS = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8100"
 ]
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25 

@@ -9,3 +9,9 @@ class EmployeesSerializer(serializers.HyperlinkedModelSerializer):
                 'url': {'view_name': 'employees-detail', 'lookup_field': 'employee_id'}
             }
         
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+        

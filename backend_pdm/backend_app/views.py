@@ -38,6 +38,7 @@ class EmployeeDetails(APIView):
         return Response(serializer.data)
 
     def put(self, request: Request, employee_id: int):
+        print(request.data, file=sys.stderr)
         employee = get_object_or_404(Employees, pk=employee_id)
         serializer = EmployeesSerializer(employee, data=request.data, context={'request': request}, partial=True)
         if serializer.is_valid():
@@ -47,4 +48,6 @@ class EmployeeDetails(APIView):
                 GROUP_NAME, {"type": "update_notification", "message": serializer.data}
             )
             return Response(serializer.data, status=status.HTTP_200_OK)
+        print(serializer.errors)
+        print(serializer.error_messages)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

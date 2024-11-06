@@ -36,7 +36,7 @@ def data_fill():
 def start():
     scheduler.add_job(
         data_fill,  
-        trigger=IntervalTrigger(seconds=10), 
+        trigger=IntervalTrigger(seconds=30), 
         id="my_job_id",
         max_instances=1, 
         replace_existing=True,

@@ -1,13 +1,14 @@
+import sys
 from rest_framework import serializers
 from .models import Employees
 from django.contrib.auth import get_user_model
 import base64
 
 class EmployeesSerializer(serializers.HyperlinkedModelSerializer):
-    manager = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all()) 
+    manager = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
     class Meta:
         model = Employees
-        fields = ['url', 'employee_id', 'first_name', 'last_name', 'salary', 'date_join', 'on_field', 'manager']
+        fields = ['url', 'employee_id', 'first_name', 'last_name', 'salary', 'date_join', 'on_field', 'manager', 'profile_picture', 'latitude', 'longitude']
         extra_kwargs = {
                 'url': {'view_name': 'employees-detail', 'lookup_field': 'employee_id'}
             }
@@ -16,8 +17,7 @@ class EmployeesSerializer(serializers.HyperlinkedModelSerializer):
         profile_picture = validated_data.pop('profile_picture', None)
         employee = super().create(validated_data)
         if profile_picture:
-            image_data = base64.b64decode(profile_picture)
-            employee.profile_picture = image_data
+            employee.profile_picture = profile_picture
             employee.save()
         return employee
 
@@ -25,8 +25,7 @@ class EmployeesSerializer(serializers.HyperlinkedModelSerializer):
         profile_picture = validated_data.pop('profile_picture', None)
         instance = super().update(instance, validated_data)
         if profile_picture:
-            image_data = base64.b64decode(profile_picture)
-            instance.profile_picture = image_data
+            instance.profile_picture = profile_picture
             instance.save()
         return instance
         

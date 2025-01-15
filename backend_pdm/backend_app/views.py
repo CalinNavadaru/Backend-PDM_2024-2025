@@ -36,7 +36,6 @@ class Register(APIView):
 class EmployeeList(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request: Request):
-        print(request.user)
         employees = Employees.objects.filter(manager=request.user)
         serializer = EmployeesSerializer(employees, many=True, context={'request': request})
         return Response(serializer.data)

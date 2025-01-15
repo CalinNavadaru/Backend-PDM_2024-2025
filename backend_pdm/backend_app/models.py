@@ -40,9 +40,9 @@ class Employees(models.Model):
     date_join = models.DateField(default=datetime.date.today)
     on_field = models.BooleanField()
     manager = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='employees')
-    profile_picture = models.BinaryField(null=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    profile_picture = models.TextField(null=True)
+    latitude = models.DecimalField(max_digits=39, decimal_places=30, null=True)
+    longitude = models.DecimalField(max_digits=39, decimal_places=30, null=True)
 
     class Meta:
         db_table = "Employees"

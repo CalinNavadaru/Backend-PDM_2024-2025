@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+from datetime import timedelta
 import os.path
 from pathlib import Path
 
@@ -31,23 +32,24 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.133', 'localhost', '127.0.0.1', '172.18.0.1']
 
 # Application definition
 
 INSTALLED_APPS = [
     "daphne",
+    "backend_app",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "backend_app",
     "rest_framework",
     "channels",
     "corsheaders",
-    "django_apscheduler"
+    "django_apscheduler",
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
@@ -60,6 +62,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+AUTH_USER_MODEL = 'backend_app.EmployeesManager'
 
 ROOT_URLCONF = "backend_pdm.urls"
 
@@ -139,9 +143,25 @@ CHANNEL_LAYERS = {
     }
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8100"
-]
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8100", 
+# ]
 
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-APSCHEDULER_RUN_NOW_TIMEOUT = 25 
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=3),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True, 
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

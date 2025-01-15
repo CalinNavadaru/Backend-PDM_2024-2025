@@ -6,6 +6,6 @@ class BackendAppConfig(AppConfig):
     name = 'backend_app'
 
     def ready(self):
-        scheduler.start()
+        # scheduler.start()
 
         request_finished.connect(close_old_connections)

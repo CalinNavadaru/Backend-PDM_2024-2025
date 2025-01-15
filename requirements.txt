@@ -7,3 +7,4 @@ channels_redis
 django-cors-headers
 django-apscheduler
 httpx
+djangorestframework-simplejwt

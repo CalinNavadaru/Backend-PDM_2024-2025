@@ -3,7 +3,7 @@ services:
       env_file: 
         - .env
       image: postgres:latest
-      restart: always
+      restart: on-failure
       shm_size: '128mb'
       ports:
         - "${POSTGRES_PORT}:${POSTGRES_PORT}"
